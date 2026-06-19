@@ -1,0 +1,181 @@
+/* ============================================================
+   Shared stylesheet for the ComfyUI learning course.
+   Tufte-inspired: quiet typography, generous margins, prints well.
+   Linked by every lesson and reference doc.
+   ============================================================ */
+
+:root {
+  --ink:        #1a1a18;
+  --ink-soft:   #4a4a46;
+  --paper:      #fdfcf9;
+  --rule:       #e6e2d6;
+  --accent:     #8a3324;   /* manga-ink red */
+  --accent-2:   #2d5d7b;   /* latent blue   */
+  --code-bg:    #f4f1e8;
+  --highlight:  #fff6cc;
+  --maxw:       720px;
+}
+
+html { font-size: 17px; }
+
+body {
+  margin: 0 auto;
+  max-width: var(--maxw);
+  padding: 4rem 1.4rem 6rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: et-book, Palatino, "Palatino Linotype", Georgia, serif;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- Masthead ------------------------------------------------ */
+.eyebrow {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .72rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 .6rem;
+}
+h1 {
+  font-size: 2.2rem;
+  line-height: 1.12;
+  font-weight: 600;
+  margin: 0 0 .4rem;
+  letter-spacing: -0.01em;
+}
+.subtitle {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.12rem;
+  margin: 0 0 2.2rem;
+}
+h2 {
+  font-size: 1.32rem;
+  font-weight: 600;
+  margin: 2.6rem 0 .5rem;
+  padding-bottom: .25rem;
+  border-bottom: 1px solid var(--rule);
+}
+h3 { font-size: 1.05rem; margin: 1.8rem 0 .3rem; }
+
+p { margin: .7rem 0; }
+a { color: var(--accent-2); text-decoration-thickness: .5px; text-underline-offset: 2px; }
+a:hover { color: var(--accent); }
+
+strong { font-weight: 600; }
+em.key { font-style: normal; background: var(--highlight); padding: 0 .2em; border-radius: 2px; }
+
+code, .mono {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .86em;
+  background: var(--code-bg);
+  padding: .08em .35em;
+  border-radius: 3px;
+}
+
+/* ---- Margin / aside notes ----------------------------------- */
+.note {
+  border-left: 3px solid var(--accent-2);
+  background: #f3f6f8;
+  padding: .7rem 1rem;
+  margin: 1.4rem 0;
+  font-size: .94rem;
+}
+.note .label {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent-2); display: block; margin-bottom: .25rem;
+}
+.note.mac { border-left-color: var(--accent); background: #faf2f0; }
+.note.mac .label { color: var(--accent); }
+
+/* ---- The pipeline diagram (flow of nodes) ------------------- */
+.pipeline {
+  margin: 1.8rem 0;
+  padding: 1.2rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #fff;
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .8rem;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+.node {
+  display: inline-block;
+  border: 1.5px solid var(--accent-2);
+  border-radius: 6px;
+  padding: .25em .6em;
+  background: #eef3f6;
+  color: var(--accent-2);
+  white-space: nowrap;
+}
+.node.warm  { border-color: var(--accent); background: #faf0ee; color: var(--accent); }
+.node.muted { border-color: #b9b4a5; background: #f4f1e8; color: var(--ink-soft); }
+.arrow { color: var(--ink-soft); padding: 0 .35em; }
+.flowlabel { color: var(--ink-soft); font-style: normal; font-size: .72rem; }
+
+/* ---- Concept table ------------------------------------------ */
+table { border-collapse: collapse; width: 100%; margin: 1.4rem 0; font-size: .92rem; }
+th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-soft); }
+td code { font-size: .82em; }
+
+/* ---- Quiz widget (works with assets/quiz.js) ---------------- */
+.quiz {
+  margin: 1.5rem 0;
+  padding: 1.2rem 1.3rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: #fff;
+}
+.quiz .q { font-weight: 600; margin: 0 0 .8rem; }
+.quiz .opt {
+  display: block; width: 100%; text-align: left;
+  font: inherit; font-size: .95rem;
+  margin: .35rem 0; padding: .55rem .8rem;
+  border: 1px solid var(--rule); border-radius: 5px;
+  background: var(--paper); cursor: pointer; transition: background .12s, border-color .12s;
+}
+.quiz .opt:hover { border-color: var(--accent-2); }
+.quiz .opt.correct  { border-color: #2e7d32; background: #eef7ef; }
+.quiz .opt.wrong    { border-color: #c0392b; background: #fbeeec; }
+.quiz .feedback { margin-top: .7rem; font-size: .9rem; min-height: 1.2em; }
+
+/* ---- Recall prompt (free retrieval) ------------------------- */
+.recall {
+  margin: 1.5rem 0; padding: 1rem 1.2rem;
+  background: var(--code-bg); border-radius: 6px;
+}
+.recall summary { cursor: pointer; font-weight: 600; }
+.recall .answer { margin-top: .7rem; padding-top: .7rem; border-top: 1px solid var(--rule); }
+
+/* ---- Footer / nav ------------------------------------------- */
+.lesson-footer {
+  margin-top: 3.5rem; padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+  font-size: .92rem; color: var(--ink-soft);
+}
+.primary-source {
+  margin: 2rem 0; padding: 1rem 1.2rem;
+  border: 1px dashed var(--accent); border-radius: 6px; background: #faf2f0;
+}
+.primary-source .label {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+}
+.ask {
+  margin-top: 2rem; font-size: .92rem; font-style: italic; color: var(--ink-soft);
+}
+
+/* ---- Print -------------------------------------------------- */
+@media print {
+  body { padding: 1rem; max-width: none; }
+  .quiz .opt { cursor: default; }
+  a { color: var(--ink); }
+  .note, .pipeline, .quiz, .primary-source { break-inside: avoid; }
+}

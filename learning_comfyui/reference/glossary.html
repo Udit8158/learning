@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary · ComfyUI Course</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<p class="eyebrow">Reference · keep open</p>
+<h1>Glossary</h1>
+<p class="subtitle">The shared vocabulary of the course. Every lesson uses these terms exactly as defined here.</p>
+
+<h2>The pipeline</h2>
+<table>
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td><strong>Diffusion</strong></td><td>Generating an image by starting from pure noise and <em>removing</em> a little noise at a time until a picture emerges. The model was trained by watching images get noised, so it learns to reverse the process.</td></tr>
+  <tr><td><strong>Latent space</strong></td><td>A compressed numeric representation of an image (~48× smaller than pixels). Diffusion happens here, not on pixels — that's why it fits on a 16 GB Mac.</td></tr>
+  <tr><td><strong>Latent</strong></td><td>One image's worth of data <em>in</em> latent space. Starts as noise, ends as the (still-compressed) finished image.</td></tr>
+  <tr><td><strong>VAE</strong></td><td>Variational Auto-Encoder. The translator between pixels and latent space. <em>Encodes</em> pixels → latent, <em>decodes</em> latent → pixels.</td></tr>
+  <tr><td><strong>U-Net</strong></td><td>The denoising model — the "brain" that predicts what noise to remove at each step. The bulk of a checkpoint's size.</td></tr>
+  <tr><td><strong>CLIP</strong></td><td>The text encoder. Turns your prompt words into numbers (an embedding) the U-Net can be steered by.</td></tr>
+  <tr><td><strong>Conditioning</strong></td><td>The encoded prompt — the "instruction" fed to the sampler. There's a positive one (want) and a negative one (avoid).</td></tr>
+  <tr><td><strong>Sampler / Scheduler</strong></td><td>The algorithm that runs the denoising loop step by step (e.g. <code>euler</code>, <code>dpmpp_2m</code>). Lives in the KSampler node.</td></tr>
+  <tr><td><strong>Steps</strong></td><td>How many denoising iterations to run. More steps = more refinement, more time. ~20–30 is typical.</td></tr>
+  <tr><td><strong>CFG scale</strong></td><td>Classifier-Free Guidance. How hard to push toward the prompt. Low = loose/creative, high = literal/over-baked. ~6–8 typical.</td></tr>
+  <tr><td><strong>Seed</strong></td><td>The number that picks the starting noise. Same seed + same settings = same image. Your reproducibility knob.</td></tr>
+</table>
+
+<h2>Models &amp; files</h2>
+<table>
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td><strong>Checkpoint</strong></td><td>A trained model file bundling U-Net + CLIP + (usually) VAE. The <em>style/knowledge</em> of your generator. e.g. an anime checkpoint for manga.</td></tr>
+  <tr><td><strong>SD1.5</strong></td><td>Stable Diffusion 1.5. Older, small, fast; native 512×512. Great first model on the M1.</td></tr>
+  <tr><td><strong>SDXL</strong></td><td>Stable Diffusion XL. Bigger, sharper; native 1024×1024. Runs on 16 GB M1 (~60–90s/image).</td></tr>
+  <tr><td><strong>Flux</strong></td><td>A newer, larger model family. Excellent quality, heavy — slow locally; a cloud-GPU candidate later.</td></tr>
+  <tr><td><strong>LoRA</strong></td><td>A small add-on file that nudges a checkpoint toward a specific style/character without retraining it. Key tool for consistent manga characters.</td></tr>
+</table>
+
+<h2>ComfyUI machinery</h2>
+<table>
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td><strong>Node</strong></td><td>A box that does one job. Think of it as a pure function: typed inputs on the left, typed outputs on the right.</td></tr>
+  <tr><td><strong>Edge / wire</strong></td><td>A connection carrying one typed value from a node's output to another's input. The data flow of your graph.</td></tr>
+  <tr><td><strong>Workflow / graph</strong></td><td>The whole network of connected nodes. Saved as JSON — also embedded inside PNGs you generate.</td></tr>
+  <tr><td><strong>MPS</strong></td><td>Metal Performance Shaders — Apple's GPU backend. ComfyUI uses it automatically on your M1 (look for <code>Using device: mps</code>).</td></tr>
+  <tr><td><code>--force-fp16</code></td><td>Launch flag that halves precision to save memory on Apple Silicon, with little quality loss. Recommended on the M1.</td></tr>
+</table>
+
+<p class="lesson-footer">Part of the ComfyUI course · see <a href="../lessons/0001-the-diffusion-pipeline.html">Lesson 1</a>. Ask your teacher to add a term whenever one trips you up.</p>
+</body>
+</html>

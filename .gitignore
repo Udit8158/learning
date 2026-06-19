@@ -1,0 +1,13 @@
+.DS_Store
+**/.DS_Store
+# model weights / large binaries (never commit)
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.gguf
+# secrets
+.env
+.env.*
+*.key

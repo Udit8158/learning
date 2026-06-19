@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 1 · The Diffusion Pipeline</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<p class="eyebrow">Lesson 1 · Concepts</p>
+<h1>The Diffusion Pipeline</h1>
+<p class="subtitle">Before you wire a single node, here is the machine you're operating — and why every ComfyUI graph is the same six boxes underneath.</p>
+
+<p>Your mission is to turn stories into manga panels you fully control. Control starts
+with a mental model. By the end of this page you'll be able to look at <em class="key">any</em>
+ComfyUI text-to-image workflow — yours or one you downloaded from Reddit — and name what
+each part is doing. That's the foundation every later lesson stands on.</p>
+
+<h2>1. The one big idea: generation is <em>denoising</em></h2>
+<p>A diffusion model does not "draw." During training it watched millions of images get
+destroyed by static, step by step, until each was pure noise — and it learned to run that
+backwards. So to make a picture, it <strong>starts from a screen of random noise and removes a
+little bit at a time</strong>, guided by your prompt, until an image is left behind.
+<a href="https://stable-diffusion-art.com/how-stable-diffusion-work/">(plain-English explainer)</a></p>
+
+<p>Think of a sculptor with a block of marble: the statue is "already in there," and each
+chip reveals more of it. Your prompt is the sculptor's intent; the noise is the marble.</p>
+
+<h2>2. Where it happens: latent space</h2>
+<p>Doing this on raw pixels would be brutally slow. So the model works in <em class="key">latent
+space</em> — a compressed code of the image about 48× smaller than the pixels. A 512×512 picture
+becomes a tiny 64×64×4 grid of numbers called a <strong>latent</strong>. The whole noisy-to-clean
+dance happens on that small grid, then gets expanded back to pixels at the very end.</p>
+
+<div class="note mac">
+  <span class="label">Why this matters for your M1</span>
+  Latent space is the reason a 16 GB Mac can generate images at all. It's also why
+  <strong>SD1.5 and SDXL run comfortably on your machine</strong> while pixel-space methods never could.
+</div>
+
+<h2>3. The four players</h2>
+<p>Four components do all the work. Memorise these four and the nodes will make instant sense.</p>
+<table>
+  <tr><th>Player</th><th>Job</th><th>TS analogy</th></tr>
+  <tr><td><strong>CLIP</strong> (text encoder)</td><td>Turns your prompt words into numbers the model can be steered by.</td><td><code>parse(prompt) → embedding</code></td></tr>
+  <tr><td><strong>U-Net</strong> (the model)</td><td>The brain. At each step, predicts what noise to subtract.</td><td>the core <code>reducer</code></td></tr>
+  <tr><td><strong>Sampler</strong></td><td>Runs the denoise loop — calls the U-Net N times on a schedule.</td><td>the <code>for</code> loop driving it</td></tr>
+  <tr><td><strong>VAE</strong></td><td>Translator: pixels ↔ latent. Only needed at the very start and end.</td><td><code>encode</code> / <code>decode</code></td></tr>
+</table>
+
+<h2>4. The pipeline = six core nodes</h2>
+<p>Here's the punchline. The default ComfyUI text-to-image workflow is just these six boxes,
+left to right. Every fancy graph you'll ever see is this spine with extra nodes clipped on.</p>
+
+<div class="pipeline">
+  <span class="node">Load Checkpoint</span><span class="arrow">→</span>
+  <span class="flowlabel">gives you</span> CLIP + U-Net + VAE<br><br>
+  <span class="node warm">CLIP Text Encode</span> <span class="flowlabel">(positive)</span><br>
+  <span class="node warm">CLIP Text Encode</span> <span class="flowlabel">(negative)</span>
+  <span class="arrow">→</span> <span class="flowlabel">conditioning</span><br><br>
+  <span class="node muted">Empty Latent Image</span> <span class="flowlabel">→ a canvas of pure noise (sets size)</span><br><br>
+  <span class="flowlabel">all three feed →</span> <span class="node">KSampler</span>
+  <span class="flowlabel">← the denoising loop runs here</span><br><br>
+  <span class="node">VAE Decode</span> <span class="flowlabel">latent → pixels</span>
+  <span class="arrow">→</span> <span class="node muted">Save Image</span>
+</div>
+
+<table>
+  <tr><th>Node</th><th>What it really does</th></tr>
+  <tr><td><code>Load Checkpoint</code></td><td>Opens your model file and hands out its three parts: CLIP, U-Net (labelled <code>MODEL</code>), and VAE.</td></tr>
+  <tr><td><code>CLIP Text Encode</code></td><td>Encodes one prompt. You use <strong>two</strong>: positive (what you want) and negative (what to avoid).</td></tr>
+  <tr><td><code>Empty Latent Image</code></td><td>Creates the blank noisy latent and <strong>sets the image dimensions</strong> (e.g. 512×512 for SD1.5).</td></tr>
+  <tr><td><code>KSampler</code></td><td>The engine room. Takes model + both prompts + the latent, then runs the denoise loop. Home of <strong>seed, steps, CFG, sampler</strong>.</td></tr>
+  <tr><td><code>VAE Decode</code></td><td>Expands the finished latent back into real pixels.</td></tr>
+  <tr><td><code>Save Image</code></td><td>Writes the PNG to disk — with the whole workflow embedded inside it.</td></tr>
+</table>
+
+<div class="note">
+  <span class="label">The KSampler is where you'll live</span>
+  Almost all your "make it look right" tuning happens on four KSampler dials:
+  <strong>seed</strong> (reproducibility), <strong>steps</strong> (refinement vs. time),
+  <strong>CFG</strong> (how literal), and <strong>sampler</strong> (the algorithm). Lesson 3 is all dials.
+</div>
+
+<h2>Check yourself</h2>
+<p>Don't just nod along — pull the answers from memory. That effort is what makes it stick.</p>
+
+<div class="quiz" data-answer="1">
+  <p class="q">When the model generates an image, what does it start from?</p>
+  <button class="opt">a blank white page</button>
+  <button class="opt">a screen of noise</button>
+  <button class="opt">a rough pencil sketch</button>
+  <button class="opt">a small blurry thumbnail</button>
+  <p class="feedback"
+     data-correct="Generation is denoising — it starts from random noise and removes it."
+     data-wrong="It starts from pure noise and removes a little each step until a picture is left."></p>
+</div>
+
+<div class="quiz" data-answer="1">
+  <p class="q">Which player translates between pixels and latent space?</p>
+  <button class="opt">the CLIP encoder</button>
+  <button class="opt">the VAE module</button>
+  <button class="opt">the U-Net brain</button>
+  <button class="opt">the seed value</button>
+  <p class="feedback"
+     data-correct="The VAE encodes pixels → latent and decodes latent → pixels."
+     data-wrong="That's the VAE — it's the pixel↔latent translator, used at the start and end only."></p>
+</div>
+
+<div class="quiz" data-answer="1">
+  <p class="q">You made a perfect panel and want the exact same image back. What guarantees it?</p>
+  <button class="opt">raise the CFG scale</button>
+  <button class="opt">reuse the same seed</button>
+  <button class="opt">add more sampler steps</button>
+  <button class="opt">switch the checkpoint file</button>
+  <p class="feedback"
+     data-correct="Same seed + same settings = same image. Seed picks the starting noise."
+     data-wrong="The seed picks the starting noise — reuse it (with the same settings) to reproduce an image."></p>
+</div>
+
+<div class="recall">
+  <summary>Recall (no peeking): name the six core nodes in order, and what each does.</summary>
+  <div class="answer">
+    <strong>Load Checkpoint</strong> → unpacks CLIP/U-Net/VAE ·
+    <strong>CLIP Text Encode ×2</strong> → encodes positive &amp; negative prompts ·
+    <strong>Empty Latent Image</strong> → blank noisy canvas + sets size ·
+    <strong>KSampler</strong> → runs the denoise loop (seed/steps/CFG/sampler) ·
+    <strong>VAE Decode</strong> → latent back to pixels ·
+    <strong>Save Image</strong> → writes the PNG.
+  </div>
+</div>
+
+<div class="primary-source">
+  <span class="label">Primary source — read this next</span>
+  <p style="margin:.4rem 0 0"><a href="https://stable-diffusion-art.com/how-stable-diffusion-work/">How does Stable Diffusion work? — Stable Diffusion Art.</a>
+  The clearest beginner explanation of latent diffusion. Read the "How does it work" and "VAE / U-Net / CLIP" sections; skip the math boxes for now.</p>
+</div>
+
+<p class="lesson-footer">
+  <strong>Next up — Lesson 2:</strong> open ComfyUI on your M1 and build this exact six-node graph by hand,
+  then generate your first local image. You'll recognise every box.<br>
+  Keep the <a href="../reference/glossary.html">Glossary</a> open while you read.
+</p>
+
+<p class="ask">I'm your teacher for this — if any part of the pipeline feels fuzzy (what "conditioning"
+really is, why two prompts, how the VAE knows what to draw), just ask me. Questions are the lesson.</p>
+
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

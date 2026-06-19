@@ -1,0 +1,177 @@
+/* course.css — shared stylesheet for the Hugging Face teaching workspace.
+   Every lesson links this so the course reads as one consistent whole.
+   Tufte-inspired: generous margins, readable measure, restrained color. */
+
+:root {
+  --ink: #1a1a1a;
+  --muted: #6b6b6b;
+  --rule: #e2e0db;
+  --bg: #fdfcfa;
+  --accent: #d4691a;        /* Hugging Face-ish warm amber */
+  --accent-soft: #fbf0e6;
+  --good: #2e7d32;
+  --bad: #c0392b;
+  --code-bg: #f4f2ee;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Georgia", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--serif);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.55;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+  font-size: 1.15rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+h1 {
+  font-size: 2.1rem;
+  line-height: 1.15;
+  margin: 0 0 0.6rem;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin: 2.6rem 0 0.6rem;
+  font-weight: 600;
+}
+
+h3 { font-size: 1.12rem; margin: 1.6rem 0 0.4rem; font-family: var(--sans); }
+
+.lead {
+  font-size: 1.25rem;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0 0 2rem;
+}
+
+p { margin: 0 0 1.1rem; }
+
+a { color: var(--accent); text-underline-offset: 2px; }
+
+hr { border: none; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+
+/* Inline + block code */
+code {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+pre {
+  font-family: var(--mono);
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+pre code { background: none; padding: 0; font-size: 0.92rem; }
+
+/* Callouts */
+.callout {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.9rem 1.1rem;
+  margin: 1.6rem 0;
+}
+.callout strong { color: var(--accent); }
+
+/* The mental-model diagram boxes */
+.stack { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.4rem 0; }
+.layer {
+  font-family: var(--sans);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  background: #fff;
+}
+.layer .label { font-weight: 700; font-size: 0.95rem; }
+.layer .desc { color: var(--muted); font-size: 0.9rem; }
+
+/* Quiz widget */
+.quiz {
+  font-family: var(--sans);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.2rem 1.3rem;
+  margin: 1.6rem 0;
+  background: #fff;
+}
+.quiz .q { font-weight: 600; margin: 0 0 0.9rem; font-size: 1rem; }
+.quiz .opts { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz button.opt {
+  font-family: var(--sans);
+  text-align: left;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.quiz button.opt:hover { border-color: var(--accent); }
+.quiz button.opt.correct { background: #e8f5e9; border-color: var(--good); color: var(--good); }
+.quiz button.opt.wrong { background: #fdecea; border-color: var(--bad); color: var(--bad); }
+.quiz .fb {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  min-height: 1.2em;
+}
+.quiz .fb.show { color: var(--ink); }
+
+/* Footer nav + reminders */
+.footer-nav {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+}
+
+.ask {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  text-align: center;
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 2.5rem 0 0;
+}
+
+@media print {
+  body { background: #fff; font-size: 11pt; max-width: 100%; }
+  .quiz button.opt { border: 1px solid #ccc; }
+  .ask, .footer-nav { page-break-inside: avoid; }
+}

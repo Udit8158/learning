@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 1 · What Hugging Face Actually Is</title>
+<link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+
+<p class="eyebrow">Hugging Face · Lesson 1</p>
+<h1>What Hugging Face actually is</h1>
+<p class="lead">The "layer behind" image, video, and automation models is just two ideas: a place that stores models, and a library that runs them. Get these and everything else clicks.</p>
+
+<p>You told me your goal: stop poking black-box APIs and actually <em>run models yourself</em> — generate images, generate video, glue models into your own scripts. Hugging Face is the foundation under all of that. This lesson gives you the mental model and the one code pattern you'll reuse forever. No setup yet — just understanding. That's <a href="0002-run-your-first-model.html">Lesson&nbsp;2</a>.</p>
+
+<h2>One picture: the Hub vs. the libraries</h2>
+
+<p>Almost everything in Hugging Face is one of two things. Keep them separate in your head:</p>
+
+<div class="stack">
+  <div class="layer">
+    <span class="label">🗂️ The Hub &mdash; the <em>what</em></span>
+    <div class="desc">A giant website (huggingface.co) that hosts <strong>Models</strong> (pre-trained AI you can download), <strong>Datasets</strong>, and <strong>Spaces</strong> (live demo apps). Think "GitHub, but for AI models." A model lives at an address like <code>black-forest-labs/FLUX.1-dev</code> &mdash; <code>owner/model-name</code>.</div>
+  </div>
+  <div class="layer">
+    <span class="label">🐍 The libraries &mdash; the <em>how</em></span>
+    <div class="desc">Python packages that download a model from the Hub and run it. <strong>transformers</strong> (text, audio, vision tasks), <strong>diffusers</strong> (image &amp; video generation &mdash; your mission), <strong>datasets</strong> (loading data). The Hub stores; the libraries execute.</div>
+  </div>
+</div>
+
+<p>That's the whole architecture, at the altitude you need today. The Hub is the <em>what</em>; the libraries are the <em>how</em>; Spaces are just other people's demos you can try in a browser. <a href="https://www.kdnuggets.com/the-complete-hugging-face-primer-for-2026" target="_blank">[ref: KDnuggets HF Primer 2026]</a></p>
+
+<h2>The one pattern: <code>pipeline()</code></h2>
+
+<p>Here is the single most important thing to memorize. The <code>transformers</code> library gives you a function called <code>pipeline()</code> that runs <em>any</em> model for a given <strong>task</strong> in three lines:</p>
+
+<pre><code>from transformers import pipeline
+
+pipe = pipeline(task="text-generation", model="google/gemma-2-2b")
+pipe("the secret to baking a really good cake is ")
+# -> [{'generated_text': 'the secret to baking a really good cake is 1. the right ingredients...'}]</code></pre>
+
+<p>Read it like a sentence: <em>"Give me a pipeline for the <strong>task</strong> <code>text-generation</code>, using the <strong>model</strong> at this Hub address."</em> Then call it with your input. Behind that one line, the library downloads the model, prepares your input, runs it, and formats the output. That hidden work is exactly the "layer behind" you wanted to understand. <a href="https://huggingface.co/docs/transformers/en/pipeline_tutorial" target="_blank">[ref: HF Pipeline tutorial]</a></p>
+
+<p>The power: <strong>swap the task and model, same shape.</strong> Want to classify an image instead? Same three lines, different strings:</p>
+
+<pre><code>pipe = pipeline(task="image-classification", model="google/vit-base-patch16-224")
+pipe("https://.../cat.jpeg")
+# -> [{'label': 'lynx', 'score': 0.43}, ...]</code></pre>
+
+<div class="callout">
+<strong>Key insight:</strong> A <em>task</em> is the kind of job ("text-generation", "image-classification", "automatic-speech-recognition"). A <em>model</em> is a specific trained brain that does that job. <code>pipeline()</code> marries the two. Image and video generation use the sibling <code>diffusers</code> library, but the same mental split holds: pick a task, pick a model, run it.</div>
+
+<h2>Check yourself</h2>
+<p>Don't just nod along &mdash; retrieving from memory is what makes it stick. Pick an answer; you'll get instant feedback.</p>
+
+<div class="quiz" id="quiz">
+
+  <div class="q" data-correct="0">
+    1. On the Hugging Face Hub, what lives at an address like <code>owner/name</code>?
+    <div class="opts">
+      <button class="opt">A pre-trained model</button>
+      <button class="opt">Your local Python</button>
+      <button class="opt">A running web app</button>
+      <button class="opt">The transformers code</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="q" data-correct="2">
+    2. Which one is a <em>library</em> that runs models, not a place that stores them?
+    <div class="opts">
+      <button class="opt">The Models Hub page</button>
+      <button class="opt">A published Space demo</button>
+      <button class="opt">The diffusers package</button>
+      <button class="opt">A dataset on the Hub</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="q" data-correct="1">
+    3. In <code>pipeline(task="text-generation", model="google/gemma-2-2b")</code>, the <code>task</code> names the&hellip;
+    <div class="opts">
+      <button class="opt">Specific trained brain</button>
+      <button class="opt">Kind of job to do</button>
+      <button class="opt">Company that hosts it</button>
+      <button class="opt">Python version to use</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="q" data-correct="3">
+    4. You keep <code>task</code> the same but change <code>model="A"</code> to <code>model="B"</code>. What happens?
+    <div class="opts">
+      <button class="opt">It can no longer run</button>
+      <button class="opt">The task type changes</button>
+      <button class="opt">Nothing changes here</button>
+      <button class="opt">Same job, new brain</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+</div>
+
+<h2>Your primary source</h2>
+<p>The single best thing to read next, before Lesson 2, is the official, current pipeline guide. Skim it &mdash; you'll already recognize the shape:</p>
+<p>👉 <a href="https://huggingface.co/docs/transformers/en/pipeline_tutorial" target="_blank"><strong>Transformers — Pipeline tutorial</strong></a> (Hugging Face official docs)</p>
+
+<div class="callout">
+<strong>Next up — Lesson 2:</strong> we install <code>transformers</code> and actually run your first <code>pipeline()</code> on your own machine and watch it work. Quick question I'll need from you first: are you planning to run this on <em>this Mac</em> (Apple Silicon) or do you have a separate machine with an NVIDIA GPU? It changes one line of setup.</div>
+
+<div class="ask">
+💬 <strong>I'm your teacher — ask me anything.</strong> Confused about what a "model" really is, why there are two libraries, or what tasks exist? Just ask in the chat. Unclear questions now save hours later.
+</div>
+
+<div class="footer-nav">
+  <span>Lesson 1 of the course</span>
+  <span><a href="../RESOURCES.md">All resources →</a></span>
+</div>
+
+<script>
+document.querySelectorAll('#quiz .q').forEach(function (q) {
+  var correct = parseInt(q.getAttribute('data-correct'), 10);
+  var fb = q.querySelector('.fb');
+  var opts = q.querySelectorAll('.opt');
+  opts.forEach(function (btn, i) {
+    btn.addEventListener('click', function () {
+      opts.forEach(function (b) { b.disabled = true; });
+      if (i === correct) {
+        btn.classList.add('correct');
+        fb.textContent = '✓ Correct.';
+      } else {
+        btn.classList.add('wrong');
+        opts[correct].classList.add('correct');
+        fb.textContent = '✗ Not quite — the highlighted one is right.';
+      }
+      fb.classList.add('show');
+    });
+  });
+});
+</script>
+
+</body>
+</html>
