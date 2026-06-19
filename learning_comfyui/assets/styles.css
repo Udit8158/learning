@@ -30,6 +30,56 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* ---- Top nav bar (every lesson) ----------------------------- */
+.topnav {
+  display: flex; align-items: center; gap: 1.1rem;
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .74rem; letter-spacing: .04em;
+  padding-bottom: 1.4rem; margin-bottom: 2rem;
+  border-bottom: 1px solid var(--rule);
+}
+.topnav a { color: var(--ink-soft); text-decoration: none; }
+.topnav a:hover { color: var(--accent); }
+.topnav .home { color: var(--accent); font-weight: 600; }
+.topnav .spacer { flex: 1; }
+
+/* ---- Prev / next pager -------------------------------------- */
+.pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; }
+.pager a, .pager span {
+  flex: 1; padding: .8rem 1rem; border: 1px solid var(--rule); border-radius: 6px;
+  text-decoration: none; font-size: .9rem;
+}
+.pager a:hover { border-color: var(--accent-2); }
+.pager .next { text-align: right; }
+.pager .disabled { color: #b9b4a5; border-style: dashed; }
+.pager .dir {
+  display: block; font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft);
+  margin-bottom: .15rem;
+}
+
+/* ---- Course index page -------------------------------------- */
+.lesson-list { list-style: none; padding: 0; margin: 1.5rem 0; }
+.lesson-list li {
+  display: flex; align-items: baseline; gap: .9rem;
+  padding: .85rem 0; border-bottom: 1px solid var(--rule);
+}
+.lesson-list .num {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .8rem; color: var(--accent); min-width: 2.4rem;
+}
+.lesson-list .ttl { font-size: 1.05rem; }
+.lesson-list .ttl a { text-decoration: none; }
+.lesson-list .blurb { display: block; font-size: .88rem; color: var(--ink-soft); font-style: italic; }
+.lesson-list .tag {
+  margin-left: auto; font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
+  padding: .15rem .5rem; border-radius: 99px; white-space: nowrap;
+}
+.tag.done    { background: #eef7ef; color: #2e7d32; }
+.tag.next    { background: #faf2f0; color: var(--accent); }
+.tag.soon    { background: var(--code-bg); color: var(--ink-soft); }
+
 /* ---- Masthead ------------------------------------------------ */
 .eyebrow {
   font-family: "SF Mono", ui-monospace, Menlo, monospace;
